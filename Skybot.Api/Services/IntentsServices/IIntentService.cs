@@ -1,9 +1,10 @@
-﻿using Skybot.Models.Skybot;
+﻿using System.Threading.Tasks;
+using Skybot.Models.Skybot;
 
 namespace Skybot.Api.Services.IntentsServices
 {
     public interface IIntentService
     {
-        string Process(LuisResultModel model);
+        Task<RecognitionResult> Execute(LuisResultModel model);
     }
 }

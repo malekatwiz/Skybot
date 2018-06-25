@@ -27,9 +27,9 @@ namespace Skybot.Api.Controllers
         [Route("process")]
         [HttpPost]
         [Authorize]
-        public IActionResult Process([FromBody]RecognitionQuery message)
+        public async Task<IActionResult> Process([FromBody]RecognitionQuery message)
         {
-            return Ok(recognitionService.Process(message.Message));
+            return Ok(await recognitionService.Process(message.Message));
         }
 
         [AllowAnonymous]

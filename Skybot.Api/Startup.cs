@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Skybot.Api.Services;
+using Skybot.Api.Services.IntentsServices;
 
 namespace Skybot.Api
 {
@@ -21,6 +22,8 @@ namespace Skybot.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IRecognitionService, RecognitionService>();
+            services.AddTransient<IIntentService, TranslateIntent>();
+            services.AddTransient<IIntentService, NoneIntent>();
 
             services.AddAuthentication(options =>
             {
