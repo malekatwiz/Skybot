@@ -12,7 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Skybot.Models" Version="1.0.0-CI-20180624-232803" />
+    <PackageReference Include="Skybot.Models" Version="2018.6.25.1" />
   </ItemGroup>
 
 </Project>
