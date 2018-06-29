@@ -4,22 +4,22 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Skybot.Api.Services.IntentsServices;
+using Skybot.Api.Services.Settings;
 using Skybot.Models.Skybot;
 
 namespace Skybot.Api.Services
 {
     public class RecognitionService : IRecognitionService
     {
-        private readonly IConfiguration configuration;
         private readonly IServiceProvider serviceProvider;
+        private readonly ISettings settings;
 
-        public RecognitionService(IConfiguration configuration, IServiceProvider serviceProvider)
+        public RecognitionService(ISettings settings, IServiceProvider serviceProvider)
         {
-            this.configuration = configuration;
+            this.settings = settings;
             this.serviceProvider = serviceProvider;
         }
 
@@ -55,7 +55,7 @@ namespace Skybot.Api.Services
 
             try
             {
-                var response = await httpClient.GetAsync($"{configuration["LuisApp:Endpoint"]}?subscription-key={configuration["LuisApp:Key"]}&verbose=true&timezoneOffset=0&q={encodedQuery}");
+                var response = await httpClient.GetAsync($"{settings.LuisAppUri}&q={encodedQuery}");
                 return await response.Content.ReadAsStringAsync();
             }
             catch (Exception)

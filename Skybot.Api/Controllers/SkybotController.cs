@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Skybot.Api.Services;
+using Skybot.Api.Services.Settings;
 using Skybot.Models.Skybot;
 
 namespace Skybot.Api.Controllers
@@ -16,11 +17,11 @@ namespace Skybot.Api.Controllers
     public class SkybotController : ControllerBase
     {
         private readonly IRecognitionService recognitionService;
-        private readonly IConfiguration configuration;
+        private readonly ISettings settings;
 
-        public SkybotController(IConfiguration configuration, IRecognitionService recognitionService)
+        public SkybotController(ISettings settings, IRecognitionService recognitionService)
         {
-            this.configuration = configuration;
+            this.settings = settings;
             this.recognitionService = recognitionService;
         }
 
@@ -48,7 +49,7 @@ namespace Skybot.Api.Controllers
                 audience = identifier
             };
 
-            var response = await httpClient.PostAsJsonAsync($"https://{configuration["Auth0:Domain"]}/oauth/token", requestContent);
+            var response = await httpClient.PostAsJsonAsync(settings.Auth0TokenUri, requestContent);
             var responseContent = await response.Content.ReadAsStringAsync();
 
             var tokenObject = JsonConvert.DeserializeObject<dynamic>(responseContent);

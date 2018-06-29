@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Skybot.Api.Services;
 using Skybot.Api.Services.IntentsServices;
+using Skybot.Api.Services.Settings;
 
 namespace Skybot.Api
 {
@@ -21,6 +22,7 @@ namespace Skybot.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<ISettings, Settings>();
             services.AddTransient<IRecognitionService, RecognitionService>();
             services.AddTransient<IIntentService, TranslateIntent>();
             services.AddTransient<IIntentService, NoneIntent>();
