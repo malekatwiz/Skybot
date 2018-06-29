@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Google.Cloud.Translation.V2;
@@ -18,18 +19,34 @@ namespace Skybot.Api.Services.IntentsServices
 
         public async Task<RecognitionResult> Execute(LuisResultModel model)
         {
-            var client = TranslationClient.CreateFromApiKey(settings.TranslateApiKey);
-            var targetText = model.Entities.FirstOrDefault(x => x.Type.Equals("Dictionary.Text"))?.Name;
-            var targetLanguage = model.Entities.FirstOrDefault(x => x.Type.Equals("Dictionary.TargetLanguage"))?.Name;
+            var client = CreateClient();
 
-            var languages = client.ListLanguages("en");
-            var targetLanguageCode = languages.FirstOrDefault(x => string.Equals(x.Name, targetLanguage, StringComparison.InvariantCultureIgnoreCase));
-            var translation = await client.TranslateTextAsync(targetText, targetLanguageCode?.Code);
+            var translation = await client.TranslateTextAsync(GetTargetText(model), Languages(client)[GetTargetLanguage(model)]);
 
             return new RecognitionResult
             {
                 Message = translation.TranslatedText
             };
+        }
+
+        private IReadOnlyDictionary<string, string> Languages(TranslationClient client)
+        {
+            return client.ListLanguages("en").ToDictionary(x => x.Name, x => x.Code, StringComparer.InvariantCultureIgnoreCase);
+        }
+
+        private string GetTargetText(LuisResultModel model)
+        {
+            return model.Entities.FirstOrDefault(x => x.Type.Equals("Dictionary.Text"))?.Name;
+        }
+
+        private string GetTargetLanguage(LuisResultModel model)
+        {
+            return model.Entities.FirstOrDefault(x => x.Type.Equals("Dictionary.TargetLanguage"))?.Name;
+        }
+
+        private TranslationClient CreateClient()
+        {
+            return TranslationClient.CreateFromApiKey(settings.TranslateApiKey);
         }
     }
 }

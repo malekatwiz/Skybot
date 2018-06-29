@@ -4,7 +4,6 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Skybot.Api.Services;
 using Skybot.Api.Services.Settings;
@@ -30,7 +29,13 @@ namespace Skybot.Api.Controllers
         [Authorize]
         public async Task<IActionResult> Process([FromBody]RecognitionQuery message)
         {
-            return Ok(await recognitionService.Process(message.Message));
+            var result = await recognitionService.Process(message.Message);
+            if (result != null)
+            {
+                return Ok(result.Message);
+            }
+
+            return StatusCode((int) HttpStatusCode.InternalServerError);
         }
 
         [AllowAnonymous]
