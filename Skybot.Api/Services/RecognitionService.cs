@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Skybot.Api.Services.IntentsServices;
 using Skybot.Api.Services.Settings;
@@ -14,20 +15,30 @@ namespace Skybot.Api.Services
 {
     public class RecognitionService : IRecognitionService
     {
-        private readonly IServiceProvider serviceProvider;
-        private readonly ISettings settings;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ISettings _settings;
+        private readonly ILogger _logger;
 
-        public RecognitionService(ISettings settings, IServiceProvider serviceProvider)
+        public RecognitionService(ISettings settings, IServiceProvider serviceProvider, ILogger<RecognitionService> logger)
         {
-            this.settings = settings;
-            this.serviceProvider = serviceProvider;
+            _settings = settings;
+            _serviceProvider = serviceProvider;
+            _logger = logger;
         }
 
         public async Task<RecognitionResult> Process(string message)
         {
-            var recognitionIntents = await GetQueryIntents(message);
+            try
+            {
+                var recognitionIntents = await GetQueryIntents(message);
 
-            return await ProcessIntents(recognitionIntents);
+                return await ProcessIntents(recognitionIntents);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An exception has been caught");
+            }
+            return new RecognitionResult();
         }
 
         private Task<RecognitionResult> ProcessIntents(LuisResultModel model)
@@ -36,7 +47,7 @@ namespace Skybot.Api.Services
             {
                 var intent = model.Intents?.OrderByDescending(x => x.Score).FirstOrDefault();
                 var intentRunnerType = typeof(NoneIntent);
-                if (intent?.Score > settings.IntentThreshold)
+                if (intent?.Score > _settings.IntentThreshold)
                 {
                     intentRunnerType = IntentsDictionary[intent.Name];
                 }
@@ -53,17 +64,8 @@ namespace Skybot.Api.Services
 
             var encodedQuery = HttpUtility.UrlEncode(query);
 
-            try
-            {
-                var response = await httpClient.GetAsync($"{settings.LuisAppUri}&q={encodedQuery}");
-                return await response.Content.ReadAsStringAsync();
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
-            return string.Empty;
+            var response = await httpClient.GetAsync($"{_settings.LuisAppUri}&q={encodedQuery}");
+            return await response.Content.ReadAsStringAsync();
         }
 
         private async Task<LuisResultModel> GetQueryIntents(string query)
@@ -75,7 +77,7 @@ namespace Skybot.Api.Services
 
         private IIntentService CreateIntentService(Type intentType)
         {
-            var intentServices = serviceProvider.GetServices<IIntentService>();
+            var intentServices = _serviceProvider.GetServices<IIntentService>();
             return intentServices.FirstOrDefault(x => intentType == x.GetType());
         }
 

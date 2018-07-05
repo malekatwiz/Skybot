@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Skybot.Api.Services;
 using Skybot.Api.Services.Settings;
@@ -15,13 +16,15 @@ namespace Skybot.Api.Controllers
     [Produces("application/json")]
     public class SkybotController : ControllerBase
     {
-        private readonly IRecognitionService recognitionService;
-        private readonly ISettings settings;
+        private readonly IRecognitionService _recognitionService;
+        private readonly ISettings _settings;
+        private readonly ILogger _logger;
 
-        public SkybotController(ISettings settings, IRecognitionService recognitionService)
+        public SkybotController(ISettings settings, IRecognitionService recognitionService, ILogger<SkybotController> logger)
         {
-            this.settings = settings;
-            this.recognitionService = recognitionService;
+            _settings = settings;
+            _recognitionService = recognitionService;
+            _logger = logger;
         }
 
         [Route("process")]
@@ -29,12 +32,15 @@ namespace Skybot.Api.Controllers
         [Authorize]
         public async Task<IActionResult> Process([FromBody]RecognitionQuery message)
         {
-            var result = await recognitionService.Process(message.Message);
+            _logger.LogInformation($"Received new request to process: {message.Message}");
+
+            var result = await _recognitionService.Process(message.Message);
             if (result != null)
             {
                 return Ok(result.Message);
             }
 
+            _logger.LogInformation("Failed to process incoming request");
             return StatusCode((int) HttpStatusCode.InternalServerError);
         }
 
@@ -54,14 +60,12 @@ namespace Skybot.Api.Controllers
                 audience = identifier
             };
 
-            var response = await httpClient.PostAsJsonAsync(settings.Auth0TokenUri, requestContent);
+            var response = await httpClient.PostAsJsonAsync(_settings.Auth0TokenUri, requestContent);
             var responseContent = await response.Content.ReadAsStringAsync();
 
             var tokenObject = JsonConvert.DeserializeObject<dynamic>(responseContent);
 
             return tokenObject == null ? StatusCode((int)HttpStatusCode.Unauthorized) : (IActionResult)Ok(tokenObject.access_token);
         }
-
-        public IActionResult Status() => Ok("I'm doing okay!");
     }
 }
