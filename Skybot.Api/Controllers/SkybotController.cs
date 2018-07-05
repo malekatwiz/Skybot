@@ -61,5 +61,7 @@ namespace Skybot.Api.Controllers
 
             return tokenObject == null ? StatusCode((int)HttpStatusCode.Unauthorized) : (IActionResult)Ok(tokenObject.access_token);
         }
+
+        public IActionResult Status() => Ok("I'm doing okay!");
     }
 }

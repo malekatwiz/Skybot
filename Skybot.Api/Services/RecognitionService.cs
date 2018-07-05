@@ -36,7 +36,7 @@ namespace Skybot.Api.Services
             {
                 var intent = model.Intents?.OrderByDescending(x => x.Score).FirstOrDefault();
                 var intentRunnerType = typeof(NoneIntent);
-                if (intent?.Score > 0.8)
+                if (intent?.Score > settings.IntentThreshold)
                 {
                     intentRunnerType = IntentsDictionary[intent.Name];
                 }
