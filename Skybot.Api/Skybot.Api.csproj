@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <UserSecretsId>e9140273-b906-4559-9eb2-6eaad055a95a</UserSecretsId>
+    <ApplicationInsightsResourceId>/subscriptions/2c7299b7-9aaa-427d-99bc-8ba417189cef/resourcegroups/skybot/providers/microsoft.insights/components/skybot1</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/2c7299b7-9aaa-427d-99bc-8ba417189cef/resourcegroups/skybot/providers/microsoft.insights/components/skybot1</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,9 +13,14 @@
 
   <ItemGroup>
     <PackageReference Include="Google.Cloud.Translation.V2" Version="1.0.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Skybot.Models" Version="2018.6.25.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>
