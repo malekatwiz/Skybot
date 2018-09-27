@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Skybot.Models.Skybot;
+using Skybot.Api.Models;
 
 namespace Skybot.Api.Services.IntentsServices
 {

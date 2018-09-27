@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Skybot.Api.Models;
 using Skybot.Api.Services;
-using Skybot.Models.Skybot;
 
 namespace Skybot.Api.Controllers
 {

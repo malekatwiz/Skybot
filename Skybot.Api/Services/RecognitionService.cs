@@ -7,9 +7,9 @@ using System.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Skybot.Api.Models;
 using Skybot.Api.Services.IntentsServices;
 using Skybot.Api.Services.Settings;
-using Skybot.Models.Skybot;
 
 namespace Skybot.Api.Services
 {

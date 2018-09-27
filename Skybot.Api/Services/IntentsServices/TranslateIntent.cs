@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Google.Cloud.Translation.V2;
+using Skybot.Api.Models;
 using Skybot.Api.Services.Settings;
-using Skybot.Models.Skybot;
 
 namespace Skybot.Api.Services.IntentsServices
 {
