@@ -6,7 +6,6 @@
         string LuisAppKey { get; }
         string LuisAppUri { get; }
         string TranslateApiKey { get; }
-        string Auth0TokenUri { get; }
         double IntentThreshold { get; }
     }
 }
