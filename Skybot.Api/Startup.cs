@@ -54,7 +54,6 @@ namespace Skybot.Api
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseMvc();
         }
     }
