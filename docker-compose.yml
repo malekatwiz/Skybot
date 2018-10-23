@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  skybot.api:
+    image: ${DOCKER_REGISTRY}/skybotapi
+    build:
+      context: .
+      dockerfile: Skybot.Api/Dockerfile
+    ports:
+      - "80"
+    environment:
+      - DOCKER_REGISTRY
+      - Authority
+      - IntentThreshold
+      - LuisApp__Endpoint
+      - LuisApp__Key
+      - TranslateApiCredentials__ApiKey
