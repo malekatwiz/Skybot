@@ -18,11 +18,13 @@ namespace Skybot.Api.Services
         private readonly IServiceProvider _serviceProvider;
         private readonly ISettings _settings;
         private readonly ILogger _logger;
+        private readonly IIntentResolver _intentResolver;
 
-        public RecognitionService(ISettings settings, IServiceProvider serviceProvider, ILogger<RecognitionService> logger)
+        public RecognitionService(ISettings settings, IServiceProvider serviceProvider, IIntentResolver intentResolver, ILogger<RecognitionService> logger)
         {
             _settings = settings;
             _serviceProvider = serviceProvider;
+            _intentResolver = intentResolver;
             _logger = logger;
         }
 
@@ -45,14 +47,7 @@ namespace Skybot.Api.Services
         {
             if (model != null)
             {
-                var intent = model.Intents?.OrderByDescending(x => x.Score).FirstOrDefault();
-                var intentRunnerType = typeof(NoneIntent);
-                if (intent?.Score > _settings.IntentThreshold)
-                {
-                    intentRunnerType = IntentsDictionary[intent.Name];
-                }
-
-                return CreateIntentService(intentRunnerType).Execute(model);
+                return _intentResolver.Resolve(model);
             }
 
             return null;
