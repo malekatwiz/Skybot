@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Skybot.Api.Models;
 using Skybot.Api.Services.IntentsServices;
+using Skybot.Api.Services.Luis;
 using Skybot.Api.Services.Settings;
 
 namespace Skybot.Api.Services
@@ -16,11 +17,13 @@ namespace Skybot.Api.Services
         private readonly ISettings _settings;
         private readonly ILogger _logger;
         private readonly IIntentService _intentService;
+        private readonly ILuisService _luisService;
 
-        public RecognitionService(ISettings settings, IIntentService intentService, ILogger<RecognitionService> logger)
+        public RecognitionService(ISettings settings, IIntentService intentService, ILuisService luisService, ILogger<RecognitionService> logger)
         {
             _settings = settings;
             _intentService = intentService;
+            _luisService = luisService;
             _logger = logger;
         }
 
@@ -28,7 +31,7 @@ namespace Skybot.Api.Services
         {
             try
             {
-                var recognitionIntents = await GetQueryIntents(message);
+                var recognitionIntents = await _luisService.Query(message);
                 var intent = recognitionIntents.Intents.OrderByDescending(x => x.Score).FirstOrDefault();
 
                 if (CheckIntentScore(intent))
@@ -41,23 +44,6 @@ namespace Skybot.Api.Services
                 _logger.LogError(ex, "An exception has been caught");
             }
             return await _intentService.Execute(string.Empty, null);
-        }
-
-        private async Task<string> CallSkybotApp(string query)
-        {
-            var httpClient = new HttpClient();
-
-            var encodedQuery = HttpUtility.UrlEncode(query);
-
-            var response = await httpClient.GetAsync($"{_settings.LuisAppUri}&q={encodedQuery}");
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        private async Task<LuisResultModel> GetQueryIntents(string query)
-        {
-            var serializedResult = await CallSkybotApp(query);
-
-            return !string.IsNullOrEmpty(serializedResult) ? JsonConvert.DeserializeObject<LuisResultModel>(serializedResult) : null;
         }
 
         private bool CheckIntentScore(LuisIntent intent)

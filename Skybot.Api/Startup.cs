@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Skybot.Api.Services;
 using Skybot.Api.Services.IntentsServices;
+using Skybot.Api.Services.Luis;
 using Skybot.Api.Services.Settings;
 
 namespace Skybot.Api
@@ -22,6 +23,7 @@ namespace Skybot.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<ISettings, Settings>();
+            services.AddTransient<ILuisService, LuisService>();
             services.AddTransient<IRecognitionService, RecognitionService>();
             services.AddTransient<IIntentFactory, IntentFactory>();
             services.AddTransient<IIntentService, IntentService>();
