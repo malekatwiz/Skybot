@@ -23,9 +23,8 @@ namespace Skybot.Api
         {
             services.AddTransient<ISettings, Settings>();
             services.AddTransient<IRecognitionService, RecognitionService>();
-            services.AddTransient<IIntentResolver, IntentResolver>();
-            services.AddTransient<IIntentService, TranslateIntent>();
-            services.AddTransient<IIntentService, NoneIntent>();
+            services.AddTransient<IIntentFactory, IntentFactory>();
+            services.AddTransient<IIntentService, IntentService>();
 
             services.AddAuthentication("Bearer")
                 .AddIdentityServerAuthentication(options =>

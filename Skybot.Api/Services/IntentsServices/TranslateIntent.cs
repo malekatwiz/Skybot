@@ -8,7 +8,7 @@ using Skybot.Api.Services.Settings;
 
 namespace Skybot.Api.Services.IntentsServices
 {
-    public class TranslateIntent : IIntentService
+    public class TranslateIntent : Intent
     {
         private readonly ISettings _settings;
 
@@ -17,12 +17,12 @@ namespace Skybot.Api.Services.IntentsServices
             _settings = settings;
         }
 
-        public async Task<RecognitionResult> Execute(LuisResultModel model)
+        public override async Task<RecognitionResult> Execute(IList<LuisEntity> entities)
         {
             var client = CreateClient();
 
-            var targetText = GetTargetText(model);
-            var targetLanguage = GetTargetLanguage(model);
+            var targetText = GetTargetText(entities);
+            var targetLanguage = GetTargetLanguage(entities);
 
             if (!string.IsNullOrEmpty(targetText) && !string.IsNullOrEmpty(targetLanguage))
             {
@@ -41,14 +41,14 @@ namespace Skybot.Api.Services.IntentsServices
             return client.ListLanguages("en").ToDictionary(x => x.Name, x => x.Code, StringComparer.InvariantCultureIgnoreCase);
         }
 
-        private string GetTargetText(LuisResultModel model)
+        private string GetTargetText(IList<LuisEntity> entities)
         {
-            return model.Entities.FirstOrDefault(x => x.Type.Equals("Dictionary.Text"))?.Name;
+            return entities.FirstOrDefault(x => x.Type.Equals("Dictionary.Text"))?.Name;
         }
 
-        private string GetTargetLanguage(LuisResultModel model)
+        private string GetTargetLanguage(IList<LuisEntity> entities)
         {
-            return model.Entities.FirstOrDefault(x => x.Type.Equals("Dictionary.TargetLanguage"))?.Name;
+            return entities.FirstOrDefault(x => x.Type.Equals("Dictionary.TargetLanguage"))?.Name;
         }
 
         private TranslationClient CreateClient()

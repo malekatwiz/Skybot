@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Skybot.Api.Models;
@@ -15,16 +13,14 @@ namespace Skybot.Api.Services
 {
     public class RecognitionService : IRecognitionService
     {
-        private readonly IServiceProvider _serviceProvider;
         private readonly ISettings _settings;
         private readonly ILogger _logger;
-        private readonly IIntentResolver _intentResolver;
+        private readonly IIntentService _intentService;
 
-        public RecognitionService(ISettings settings, IServiceProvider serviceProvider, IIntentResolver intentResolver, ILogger<RecognitionService> logger)
+        public RecognitionService(ISettings settings, IIntentService intentService, ILogger<RecognitionService> logger)
         {
             _settings = settings;
-            _serviceProvider = serviceProvider;
-            _intentResolver = intentResolver;
+            _intentService = intentService;
             _logger = logger;
         }
 
@@ -33,24 +29,18 @@ namespace Skybot.Api.Services
             try
             {
                 var recognitionIntents = await GetQueryIntents(message);
+                var intent = recognitionIntents.Intents.OrderByDescending(x => x.Score).FirstOrDefault();
 
-                return await ProcessIntents(recognitionIntents);
+                if (CheckIntentScore(intent))
+                {
+                    return await _intentService.Execute(intent?.Name, recognitionIntents.Entities);
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An exception has been caught");
             }
-            return new RecognitionResult();
-        }
-
-        private Task<RecognitionResult> ProcessIntents(LuisResultModel model)
-        {
-            if (model != null)
-            {
-                return _intentResolver.Resolve(model);
-            }
-
-            return null;
+            return await _intentService.Execute(string.Empty, null);
         }
 
         private async Task<string> CallSkybotApp(string query)
@@ -70,17 +60,13 @@ namespace Skybot.Api.Services
             return !string.IsNullOrEmpty(serializedResult) ? JsonConvert.DeserializeObject<LuisResultModel>(serializedResult) : null;
         }
 
-        private IIntentService CreateIntentService(Type intentType)
+        private bool CheckIntentScore(LuisIntent intent)
         {
-            var intentServices = _serviceProvider.GetServices<IIntentService>();
-            return intentServices.FirstOrDefault(x => intentType == x.GetType());
+            if (intent?.Score > _settings.IntentThreshold)
+            {
+                return true;
+            }
+            return false;
         }
-
-        private static IDictionary<string, Type> IntentsDictionary => new Dictionary<string, Type>
-        {
-            {"None", typeof(NoneIntent)},
-            {"Who is", typeof(NoneIntent)},
-            {"Translate", typeof(TranslateIntent)}
-        };
     }
 }
