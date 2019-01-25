@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Skybot.Api.Models;
 using Skybot.Api.Services.IntentsServices;
 using Skybot.Api.Services.Luis;

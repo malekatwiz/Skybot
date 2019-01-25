@@ -8,6 +8,7 @@ namespace Skybot.Api.Controllers
     {
         [AllowAnonymous]
         [HttpGet]
+        [ProducesResponseType(200)]
         public IActionResult Index()
         {
             return Ok("I'm doing okay");
