@@ -20,12 +20,12 @@ namespace Skybot.Api.Controllers
             _logger = logger;
         }
 
-        [Route("process")]
+        [Route("process/{query}")]
         [HttpPost]
         [Authorize]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> Process([FromBody]string query)
+        public async Task<IActionResult> Process(string query)
         {
             _logger.LogInformation($"Received new request to process: {query}");
 
