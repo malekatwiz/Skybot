@@ -23,6 +23,8 @@ namespace Skybot.Api.Models
         public string Name { get; set; }
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
+
+        //TODO: Consider removing
         [JsonProperty(PropertyName = "score")]
         public double Score { get; set; }
     }

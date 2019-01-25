@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -14,73 +15,100 @@ namespace Skybot.Api.UnitTests.Services
     [TestClass]
     public class RecognitionServiceTests
     {
-        private RecognitionService _testee;
-        private Mock<ISettings> _settingsMock;
-        private Mock<ILogger<RecognitionService>> _loggerMock;
-        private Mock<IIntentService> _intentServiceMock;
-        private Mock<ILuisService> _luisServiceMock;
-
-        [TestInitialize]
-        public void Init()
+        [TestMethod]
+        public async Task Process_ReturnsNonEmptyRecognitionResult_WhenIntentHasRequiredScore()
         {
-            _settingsMock = new Mock<ISettings>();
-            _loggerMock = new Mock<ILogger<RecognitionService>>();
-            _intentServiceMock = new Mock<IIntentService>();
-            _luisServiceMock = new Mock<ILuisService>();
+            var query = "I'm testing you";
+            var luisResultModel = CreateTestLuisResultModel();
+            var recognitionResult = new RecognitionResult { Message = "I will pass your test" };
 
-            MockSettings();
+            var settingsMock = new Mock<ISettings>();
+            settingsMock.Setup(x => x.IntentThreshold).Returns(0.75);
+
+            var intentServiceMock = new Mock<IIntentService>();
+            var intentWithHighestScore = luisResultModel.Intents.OrderByDescending(x => x.Score).FirstOrDefault();
+            intentServiceMock.Setup(x => x.Execute(intentWithHighestScore.Name, luisResultModel.Entities))
+                .Returns(Task.FromResult(recognitionResult))
+                .Verifiable();
+
+            var luisServiceMock = CreateLuisServiceMock(luisResultModel, query);
+
+            var loggerMock = new Mock<ILogger<RecognitionService>>();
+
+            var recognitionService = new RecognitionService(settingsMock.Object,
+                intentServiceMock.Object,
+                luisServiceMock.Object,
+                loggerMock.Object);
+
+            var result = await recognitionService.Process(query);
+
+            luisServiceMock.Verify();
+            intentServiceMock.Verify();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result, recognitionResult);
         }
 
         [TestMethod]
-        public async Task MessageWithTranslationIntent_Should_ReturnResponseWithTranslation()
+        public async Task Process_ReturnsEmptyRecognitionResult_WhenIntentScoreIsLessThanRequired()
         {
-            var message = "Say hello in french";
-            var resultModel = new LuisResultModel
+            var query = "I'm testing you";
+            var luisResultModel = CreateTestLuisResultModel();
+            var recognitionResult = new RecognitionResult { Message = string.Empty };
+
+            var settingsMock = new Mock<ISettings>();
+            settingsMock.Setup(x => x.IntentThreshold).Returns(0.9);
+
+            var intentServiceMock = new Mock<IIntentService>();
+            intentServiceMock.Setup(x => x.Execute(string.Empty, null))
+                .Returns(Task.FromResult(recognitionResult))
+                .Verifiable();
+
+            var luisServiceMock = CreateLuisServiceMock(luisResultModel, query);
+
+            var loggerMock = new Mock<ILogger<RecognitionService>>();
+
+            var recognitionService = new RecognitionService(settingsMock.Object,
+                intentServiceMock.Object,
+                luisServiceMock.Object,
+                loggerMock.Object);
+
+            var result = await recognitionService.Process(query);
+
+            luisServiceMock.Verify();
+            intentServiceMock.Verify();
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result, recognitionResult);
+        }
+
+        private LuisResultModel CreateTestLuisResultModel()
+        {
+            return new LuisResultModel
             {
-                Intents = new List<LuisIntent>
-                {
-                    new LuisIntent {Name = "Translate", Score = 0.99},
-                    new LuisIntent {Name = "SomethingElse", Score = 0.008}
-                },
                 Entities = new List<LuisEntity>
                 {
-                    new LuisEntity {Name = "french", Score = 0.99, Type = "Dictionary.TargetLanguage"},
-                    new LuisEntity {Name = "hello", Score = 0.906, Type = "Dictionary.Text"}
+                    new LuisEntity{ Name = "Entity1", Type = "EntityType1", Score = 0.5},
+                    new LuisEntity{ Name = "Entity2", Type = "EntityType2", Score = 0.2},
+                    new LuisEntity{ Name = "Entity3", Type = "EntityType3", Score = 0.8}
+                },
+                Intents = new List<LuisIntent>
+                {
+                    new LuisIntent{Name = "Intent1", Score = 0.2},
+                    new LuisIntent{Name = "Intent2", Score = 0.5},
+                    new LuisIntent{Name = "Intent3", Score = 0.8}
                 }
             };
-
-            MockLuisService(message, resultModel);
-            MockIntentService("Translate", resultModel.Entities);
-
-            _testee = new RecognitionService(_settingsMock.Object,
-                _intentServiceMock.Object,
-                _luisServiceMock.Object,
-                _loggerMock.Object);
-
-            var response = await _testee.Process(message);
-
-            Assert.IsNotNull(response);
-            Assert.AreEqual(response.Message, "Bonjour");
         }
 
-        private void MockLuisService(string message, LuisResultModel resultModel)
+        private Mock<ILuisService> CreateLuisServiceMock(LuisResultModel model, string query)
         {
-            _luisServiceMock.Setup(x => x.Query(message)).Returns(Task.FromResult(resultModel));
-        }
+            var luisServiceMock = new Mock<ILuisService>();
+            luisServiceMock.Setup(x => x.Query(query))
+                .Returns(Task.FromResult(model))
+                .Verifiable();
 
-        private void MockIntentService(string intent, IList<LuisEntity> entities)
-        {
-            _intentServiceMock.Setup(x => x.Execute(intent, entities))
-                .Returns(Task.FromResult(new RecognitionResult
-                {
-                    Message = "Bonjour"
-                }));
-        }
-
-        private void MockSettings()
-        {
-            _settingsMock.Setup(x => x.IntentThreshold).Returns(0.75);
-            _settingsMock.Setup(x => x.LuisAppUri).Returns(string.Empty);
+            return luisServiceMock;
         }
     }
 }
