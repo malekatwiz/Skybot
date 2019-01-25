@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Skybot.Api.Models;
 using Skybot.Api.Services;
 
 namespace Skybot.Api.Controllers
@@ -24,18 +23,20 @@ namespace Skybot.Api.Controllers
         [Route("process")]
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Process([FromBody]RecognitionQuery message)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> Process([FromBody]string query)
         {
-            _logger.LogInformation($"Received new request to process: {message.Message}");
+            _logger.LogInformation($"Received new request to process: {query}");
 
-            var result = await _recognitionService.Process(message.Message);
+            var result = await _recognitionService.Process(query);
             if (result != null)
             {
                 return Ok(result.Message);
             }
 
             _logger.LogInformation("Failed to process incoming request");
-            return StatusCode((int) HttpStatusCode.InternalServerError);
+            return new BadRequestResult();
         }
     }
 }
