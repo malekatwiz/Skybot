@@ -30,7 +30,7 @@ This project is licensed under MIT License license.
 
 MIT License
 
-Copyright (c) [2019] [Malek Atwiz]
+Copyright (c) 2019 Malek Atwiz
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
