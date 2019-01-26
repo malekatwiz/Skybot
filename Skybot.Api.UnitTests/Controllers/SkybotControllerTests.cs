@@ -15,14 +15,14 @@ namespace Skybot.Api.UnitTests.Controllers
         [TestMethod]
         public async Task Process_ReturnsOkObjectResult_WhenQueryIsNotEmpty()
         {
-            var query = "I'm testing you";
+            var queryModel = new QueryModel { Query = "I'm testing you" };
             var recognitionResult = new RecognitionResult
             {
                 Message = "I will pass your test"
             };
 
             var recognitionServiceMock = new Mock<IRecognitionService>();
-            recognitionServiceMock.Setup(x => x.Process(query))
+            recognitionServiceMock.Setup(x => x.Process(queryModel.Query))
                 .Returns(Task.FromResult(recognitionResult))
                 .Verifiable();
 
@@ -31,7 +31,7 @@ namespace Skybot.Api.UnitTests.Controllers
             var skybotController = new SkybotController(recognitionServiceMock.Object,
                 loggerMock.Object);
 
-            var result = await skybotController.Process(query);
+            var result = await skybotController.Process(queryModel);
             var okObjectResult = result as OkObjectResult;
 
             recognitionServiceMock.Verify();
@@ -45,7 +45,7 @@ namespace Skybot.Api.UnitTests.Controllers
         public async Task Process_ReturnsHttpBadRequest_WhenQueryIsEmpty()
         {
             var recognitionServiceMock = new Mock<IRecognitionService>();
-            recognitionServiceMock.Setup(x => x.Process(string.Empty))
+            recognitionServiceMock.Setup(x => x.Process(null))
                 .Returns(Task.FromResult((RecognitionResult)null))
                 .Verifiable();
 
@@ -54,7 +54,7 @@ namespace Skybot.Api.UnitTests.Controllers
             var skybotController = new SkybotController(recognitionServiceMock.Object,
                 loggerMock.Object);
 
-            var result = await skybotController.Process(string.Empty);
+            var result = await skybotController.Process(new QueryModel());
             var badRequestResult = result as BadRequestResult;
 
             recognitionServiceMock.Verify();
