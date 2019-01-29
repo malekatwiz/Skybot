@@ -18,9 +18,10 @@ It provides a service to process string queries for language understanding, curr
 
 ## Related projects
 
-List of projects work with Skybot:
+List of related projects that are part of Skybot system:
 * [Skybot Auth](https://github.com/malekatwiz/Skybot.Auth)
 * [Texto API](https://github.com/malekatwiz/Texto.Api)
+* [Skybot Functions](https://github.com/malekatwiz/Skybot.Functions)
 * [Texto Sender Azure Function](https://github.com/malekatwiz/Texto.Sender.Function)
 * [Skybot Text Guard Azure Function](https://github.com/malekatwiz/Skybot.Text.Guard)
 
