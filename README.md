@@ -25,9 +25,6 @@ List of related projects that are part of Skybot system:
 * [Texto Sender Azure Function](https://github.com/malekatwiz/Texto.Sender.Function)
 * [Skybot Text Guard Azure Function](https://github.com/malekatwiz/Skybot.Text.Guard)
 
-Here's a list of other related projects where you can find inspiration for
-creating the best possible README for your own project:
-
 ## [Licensing](/LICENSE)
 
 This project is licensed under MIT License license.
