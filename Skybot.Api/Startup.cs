@@ -25,7 +25,8 @@ namespace Skybot.Api
             services.AddTransient<ISettings, Settings>();
             services.AddTransient<ILuisService, LuisService>();
             services.AddTransient<IRecognitionService, RecognitionService>();
-            services.AddTransient<IIntentFactory, IntentFactory>();
+            services.AddTransient<ITranslateIntent, TranslateIntent>();                
+            services.AddTransient<INonIntent, NonIntent>();
             services.AddTransient<IIntentService, IntentService>();
 
             services.AddAuthentication("Bearer")

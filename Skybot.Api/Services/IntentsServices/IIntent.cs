@@ -4,8 +4,8 @@ using Skybot.Api.Models;
 
 namespace Skybot.Api.Services.IntentsServices
 {
-    public abstract class Intent
+    public interface IIntent
     {
-        public abstract Task<RecognitionResult> Execute(IList<LuisEntity> entities);
+        Task<RecognitionResult> Execute(IList<LuisEntity> entities);
     }
 }

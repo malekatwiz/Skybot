@@ -8,7 +8,7 @@ using Skybot.Api.Services.Settings;
 
 namespace Skybot.Api.Services.IntentsServices
 {
-    public class TranslateIntent : Intent
+    public class TranslateIntent : ITranslateIntent
     {
         private readonly ISettings _settings;
 
@@ -17,7 +17,7 @@ namespace Skybot.Api.Services.IntentsServices
             _settings = settings;
         }
 
-        public override async Task<RecognitionResult> Execute(IList<LuisEntity> entities)
+        public async Task<RecognitionResult> Execute(IList<LuisEntity> entities)
         {
             var client = CreateClient();
 
