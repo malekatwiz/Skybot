@@ -22,11 +22,16 @@ namespace Skybot.Api.UnitTests.Services.IntentsServices
             var settingsMock = new Mock<ISettings>();
             settingsMock.Setup(x => x.TranslateApiKey).Returns("key");
 
-            var intentFactoryMock = new Mock<IIntentFactory>();
-            intentFactoryMock.Setup(x => x.CreateIntent("Translate"))
-                .Returns(new TranslateIntent(settingsMock.Object));
+            var translateIntentMock = new Mock<ITranslateIntent>();
+            translateIntentMock.Setup(x => x.Execute(testEntities))
+                .Returns(Task.FromResult(new RecognitionResult
+                {
+                    Message = "translated text"
+                }));
 
-            var intentService = new IntentService(intentFactoryMock.Object);
+            var nonIntentMock = new Mock<INonIntent>();
+
+            var intentService = new IntentService(translateIntentMock.Object, nonIntentMock.Object);
 
             var result = await intentService.Execute("Translate", testEntities);
 

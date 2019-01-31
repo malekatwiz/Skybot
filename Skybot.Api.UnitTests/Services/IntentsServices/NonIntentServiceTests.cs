@@ -10,7 +10,7 @@ namespace Skybot.Api.UnitTests.Services.IntentsServices
         [TestMethod]
         public async Task Execute_ReturnsRecognitionResultWithErrorMessage()
         {
-            var nonIntent = new NoneIntent();
+            var nonIntent = new NonIntent();
 
             var result = await nonIntent.Execute(null);
 

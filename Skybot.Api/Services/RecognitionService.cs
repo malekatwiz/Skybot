@@ -45,11 +45,7 @@ namespace Skybot.Api.Services
 
         private bool CheckIntentScore(LuisIntent intent)
         {
-            if (intent?.Score > _settings.IntentThreshold)
-            {
-                return true;
-            }
-            return false;
+            return intent?.Score > _settings.IntentThreshold;
         }
     }
 }
