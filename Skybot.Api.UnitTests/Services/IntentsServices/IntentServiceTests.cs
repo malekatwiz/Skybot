@@ -29,9 +29,11 @@ namespace Skybot.Api.UnitTests.Services.IntentsServices
                     Message = "translated text"
                 }));
 
+            var homeAutomationMock = new Mock<IHomeAutomationIntent>();
+
             var nonIntentMock = new Mock<INonIntent>();
 
-            var intentService = new IntentService(translateIntentMock.Object, nonIntentMock.Object);
+            var intentService = new IntentService(translateIntentMock.Object, nonIntentMock.Object, homeAutomationMock.Object);
 
             var result = await intentService.Execute("Translate", testEntities);
 
