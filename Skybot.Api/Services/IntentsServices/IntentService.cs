@@ -8,11 +8,12 @@ namespace Skybot.Api.Services.IntentsServices
     {
         private readonly IDictionary<string, IIntent> _intents;
 
-        public IntentService(ITranslateIntent translateIntent, INonIntent nonIntent)
+        public IntentService(ITranslateIntent translateIntent, INonIntent nonIntent, IHomeAutomationIntent homeAutomation)
         {
             _intents = new Dictionary<string, IIntent>
             {
                 {IntentType.Translate, translateIntent},
+                {IntentType.HomeAutomation, homeAutomation},
                 {IntentType.NonIntent, nonIntent}
             };
         }
