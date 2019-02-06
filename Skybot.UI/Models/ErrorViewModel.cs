@@ -1,5 +1,3 @@
-using System;
-
 namespace Skybot.UI.Models
 {
     public class ErrorViewModel
