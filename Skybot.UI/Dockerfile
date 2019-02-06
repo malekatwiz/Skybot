@@ -8,7 +8,7 @@ WORKDIR /src
 COPY ["Skybot.UI/Skybot.UI.csproj", "Skybot.UI/"]
 RUN dotnet restore "Skybot.UI/Skybot.UI.csproj"
 COPY . .
-WORKDIR "/src/Skybot.UI"
+WORKDIR /src/Skybot.UI
 RUN dotnet build "Skybot.UI.csproj" -c Release -o /app
 
 FROM build AS publish

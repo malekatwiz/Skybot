@@ -3,6 +3,7 @@ version: '3.4'
 services:
   skybot.api:
     image: ${DOCKER_REGISTRY}/skybotapi
+    container_name: skybotapi
     build:
       context: .
       dockerfile: Skybot.Api/Dockerfile
@@ -15,3 +16,12 @@ services:
       - LuisApp__Endpoint
       - LuisApp__Key
       - TranslateApiCredentials__ApiKey
+  skybot.ui:
+    image: ${DOCKER_REGISTRY}/skybotui
+    container_name: skybotui
+    depends_on:
+      - skybot.api
+    build:
+      context: .
+      dockerfile: Skybot.UI/Dockerfile
+
