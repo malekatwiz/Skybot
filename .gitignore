@@ -261,3 +261,4 @@ __pycache__/
 *.pyc
 /.env
 /.vscode
+/Skybot.UI/appsettings.Development.json.json
