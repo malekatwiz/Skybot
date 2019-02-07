@@ -1,12 +1,21 @@
-﻿@{
+﻿@model UserAccountModel
+@{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Login</h1>
 
-<form asp-action="Index" asp-controller="Account">
-    <input type="text" name="username" placeholder="username" required="required"/>
-    <input type="password" name="password" placeholder="password" required="required"/>
-    <input type="submit"/>
-</form>
+<div class="col-md-6 mx-auto">
+    <div class="card card-body">
+        <form asp-action="Check" asp-controller="Account" method="post">
+            @Html.AntiForgeryToken()
+            <fieldset>
+                <div class="form-group">
+                    <input type="tel" asp-for="PhoneNumber" required="required" placeholder="15141112222" class="form-control"/>
+                </div>
+            </fieldset>
+            <input type="submit" class="btn btn-lg btn-primary btn-block" value="Next"/>
+        </form>
+    </div>
+</div>

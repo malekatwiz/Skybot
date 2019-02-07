@@ -1,0 +1,22 @@
+﻿@model UserAccountModel
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Looks like we don't know your name, please type it below to create an account..</h2>
+
+<div class="col-md-6 mx-auto">
+    <div class="card card-body">
+        <form asp-action="Create" asp-controller="Account" method="post">
+            @Html.AntiForgeryToken()
+            <fieldset>
+                <div class="form-group">
+                    <input type="tel" asp-for="PhoneNumber" required="required" placeholder="your phone number" class="form-control"/>
+                    <input type="text" asp-for="Name" required="required" placeholder="your name" class="form-control"/>
+                </div>
+            </fieldset>
+            <input type="submit" class="btn btn-lg btn-primary btn-block" value="Create" />
+        </form>
+    </div>
+</div>

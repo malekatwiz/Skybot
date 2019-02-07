@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Skybot.UI.Services;
+using Skybot.UI.Settings;
 
 namespace Skybot.UI
 {
@@ -19,6 +21,10 @@ namespace Skybot.UI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<ISettings, Settings.Settings>();
+            services.AddTransient<IAuthorizationService, AuthorizationService>();
+            services.AddTransient<IAccountService, AccountService>();
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -46,7 +52,6 @@ namespace Skybot.UI
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseCookiePolicy();
 
             app.UseMvc(routes =>
             {
