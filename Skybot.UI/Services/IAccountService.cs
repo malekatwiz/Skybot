@@ -5,9 +5,10 @@ namespace Skybot.UI.Services
 {
     public interface IAccountService
     {
-        Task<bool> HasAccount(string phoneNumber);
-        Task SendAccessCode(string phoneNumber);
-        Task<bool> Create(UserAccountModel userAccountModel);
-        Task<bool> ValidateAccessCode(VerificationCodeModel verificationCodeModel);
+        Task<bool> HasAccountAsync(string phoneNumber);
+        Task SendAccessCodeAsync(string phoneNumber);
+        Task<bool> CreateAsync(UserAccountModel userAccountModel);
+        Task<UserAccountModel> GetByPhoneNumberAsync(string phoneNumber);
+        Task<bool> ValidateAccessCodeAsync(VerificationCodeModel verificationCodeModel);
     }
 }

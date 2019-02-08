@@ -18,9 +18,9 @@ namespace Skybot.UI.Services
             _authorizationService = authorizationService;
         }
 
-        public async Task<bool> HasAccount(string phoneNumber)
+        public async Task<bool> HasAccountAsync(string phoneNumber)
         {
-            var accessToken = await _authorizationService.GetToken();
+            var accessToken = await _authorizationService.GetTokenAsync();
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
@@ -30,7 +30,7 @@ namespace Skybot.UI.Services
             }
         }
 
-        public async Task SendAccessCode(string phoneNumber)
+        public async Task SendAccessCodeAsync(string phoneNumber)
         {
             var accessCode = await GetAccessCode(phoneNumber);
             if (!string.IsNullOrEmpty(accessCode))
@@ -39,11 +39,11 @@ namespace Skybot.UI.Services
             }
         }
 
-        public async Task<bool> Create(UserAccountModel userAccountModel)
+        public async Task<bool> CreateAsync(UserAccountModel userAccountModel)
         {
-            if (await HasAccount(userAccountModel.PhoneNumber))
+            if (await HasAccountAsync(userAccountModel.PhoneNumber))
             {
-                var accessToken = await _authorizationService.GetToken();
+                var accessToken = await _authorizationService.GetTokenAsync();
                 using (var httpClient = new HttpClient())
                 {
                     httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
@@ -58,9 +58,27 @@ namespace Skybot.UI.Services
             return false;
         }
 
-        public async Task<bool> ValidateAccessCode(VerificationCodeModel verificationCodeModel)
+        public async Task<UserAccountModel> GetByPhoneNumberAsync(string phoneNumber)
         {
-            var accessToken = await _authorizationService.GetToken();
+            var accessToken = await _authorizationService.GetTokenAsync();
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+
+                var response = await httpClient.GetAsync($"{_settings.SkybotAccountsUri}/api/accounts/{phoneNumber}");
+
+                if (response.StatusCode.Equals(HttpStatusCode.Found))
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<UserAccountModel>(responseContent);
+                }
+                return new UserAccountModel();
+            }
+        }
+
+        public async Task<bool> ValidateAccessCodeAsync(VerificationCodeModel verificationCodeModel)
+        {
+            var accessToken = await _authorizationService.GetTokenAsync();
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
@@ -72,7 +90,7 @@ namespace Skybot.UI.Services
 
         private async Task<string> GetAccessCode(string phoneNumber)
         {
-            var accessToken = await _authorizationService.GetToken();
+            var accessToken = await _authorizationService.GetTokenAsync();
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
@@ -93,7 +111,7 @@ namespace Skybot.UI.Services
 
         private async Task<bool> SendMessage(string phoneNumber, string body)
         {
-            var accessToken = await _authorizationService.GetToken();
+            var accessToken = await _authorizationService.GetTokenAsync();
             using (var httpClient = new HttpClient())
             {
                 httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
