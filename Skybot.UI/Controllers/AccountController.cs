@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Skybot.UI.Models;
 using Skybot.UI.Services;
-using IAuthorizationService = Skybot.UI.Services.IAuthorizationService;
 
 namespace Skybot.UI.Controllers
 {
@@ -11,9 +11,9 @@ namespace Skybot.UI.Controllers
     public class AccountController : Controller
     {
         private readonly IAccountService _accountService;
-        private readonly IAuthorizationService _authorizationService;
+        private readonly Services.IAuthorizationService _authorizationService;
         
-        public AccountController(IAccountService accountService, IAuthorizationService authorizationService)
+        public AccountController(IAccountService accountService, Services.IAuthorizationService authorizationService)
         {
             _accountService = accountService;
             _authorizationService = authorizationService;
@@ -27,7 +27,7 @@ namespace Skybot.UI.Controllers
         
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<IActionResult> Check(UserAccountModel model)
+        public async Task<IActionResult> Login(UserAccountModel model)
         {
             if (ModelState.IsValid)
             {
@@ -87,6 +87,18 @@ namespace Skybot.UI.Controllers
             }
 
             return View("Create", model);
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await _authorizationService.UserSignOutAsync(HttpContext);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public Task<IActionResult> Details(string phoneNumber)
+        {
+            throw new NotImplementedException();
         }
     }
 }

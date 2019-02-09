@@ -51,5 +51,10 @@ namespace Skybot.UI.Services
 
             await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
+
+        public async Task UserSignOutAsync(HttpContext httpContext)
+        {
+            await httpContext.SignOutAsync();
+        }
     }
 }

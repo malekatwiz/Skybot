@@ -8,5 +8,6 @@ namespace Skybot.UI.Services
     {
         Task<string> GetTokenAsync();
         Task UserSignInAsync(HttpContext httpContext, UserAccountModel userAccount);
+        Task UserSignOutAsync(HttpContext httpContext);
     }
 }

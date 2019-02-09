@@ -39,7 +39,7 @@ namespace Skybot.UI
                     options.Cookie.HttpOnly = true;
                     options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
                     options.SlidingExpiration = true;
-                    options.LoginPath = "/account";
+                    options.LoginPath = "/account/index";
                 });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
