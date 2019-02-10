@@ -16,5 +16,6 @@ namespace Skybot.UI.Settings
         public string SkybotAuthClientSecret => _configuration["SkybotAuth:ClientSecret"];
         public string SkybotAccountsUri => _configuration["SkybotAccounts:Uri"];
         public string SkybotTextoUri => _configuration["SkybotTexto:Uri"];
+        public string SkybotApiUri => _configuration["SkybotApi:Uri"];
     }
 }

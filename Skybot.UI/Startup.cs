@@ -25,6 +25,7 @@ namespace Skybot.UI
             services.AddTransient<ISettings, Settings.Settings>();
             services.AddTransient<IAuthorizationService, AuthorizationService>();
             services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<ISkybotService, SkybotService>();
 
             //services.Configure<CookiePolicyOptions>(options =>
             //{

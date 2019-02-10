@@ -1,14 +1,23 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Skybot.UI.Models;
+using Skybot.UI.Services;
 
 namespace Skybot.UI.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
-        [Authorize]
+        private readonly ISkybotService _skybotService;
+
+        public HomeController(ISkybotService skybotService)
+        {
+            _skybotService = skybotService;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -20,9 +29,22 @@ namespace Skybot.UI.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public IActionResult Query()
+        [HttpPost]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> SendQuery(string query)
         {
-            throw new NotImplementedException();
+            var result = await _skybotService.SendQueryAsync(new SkybotQueryModel
+            {
+                Query = query
+            });
+
+            if (string.IsNullOrEmpty(result))
+            {
+                return new BadRequestResult();
+            }
+
+            return Ok(result);
         }
     }
 }

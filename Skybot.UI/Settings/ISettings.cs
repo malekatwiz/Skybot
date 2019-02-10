@@ -7,5 +7,6 @@
         string SkybotAuthClientSecret { get; }
         string SkybotAccountsUri { get; }
         string SkybotTextoUri { get; }
+        string SkybotApiUri { get; }
     }
 }

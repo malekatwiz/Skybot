@@ -5,9 +5,14 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <div>
-        <form asp-action="Query" asp-controller="Home" >
-            <input name="query.input" required="required" placeholder="Ask me to do something.." class="form-control"/>
-            <input type="submit" value="Send"/>
+        <form asp-action="SendQuery" asp-controller="Home">
+            @Html.AntiForgeryToken()
+            <fieldset>
+                <div class="form-group">
+                    <input name="query" required="required" placeholder="Ask me to do something.." class="form-control" />
+                </div>
+            </fieldset>
+            <input type="submit" class="btn btn-lg btn-primary btn-block" value="Send"/>
         </form>
     </div>
 </div>
