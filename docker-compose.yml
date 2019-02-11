@@ -16,12 +16,14 @@ services:
       - LuisApp__Endpoint
       - LuisApp__Key
       - TranslateApiCredentials__ApiKey
-  skybot.ui:
-    image: ${DOCKER_REGISTRY}/skybotui
-    container_name: skybotui
+
+
+  skybot.spa:
+    image: ${DOCKER_REGISTRY}/skybotspa
+    container_name: skybotspa
     depends_on:
       - skybot.api
     build:
       context: .
-      dockerfile: Skybot.UI/Dockerfile
+      dockerfile: Skybot.Spa/Dockerfile
 

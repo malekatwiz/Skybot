@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./nav-menu.component.css']
 })
 export class NavMenuComponent {
+  title = "Skybot";
   isExpanded = false;
 
   collapse() {
