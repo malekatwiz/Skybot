@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
 export class NavMenuComponent {
   title = "Skybot";
   isExpanded = false;
+  isAuthorized = false;
 
   collapse() {
     this.isExpanded = false;

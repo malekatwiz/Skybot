@@ -1,6 +1,8 @@
+using System;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +22,7 @@ namespace Skybot.Spa
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAntiforgery(x => x.HeaderName = "X-XSRF-TOKEN");
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // In production, the Angular files will be served from this directory
@@ -30,7 +33,7 @@ namespace Skybot.Spa
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IAntiforgery antiforgery)
         {
             if (env.IsDevelopment())
             {
@@ -42,6 +45,22 @@ namespace Skybot.Spa
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.Use(x => context =>
+            {
+                string path = context.Request.Path.Value;
+                if (string.Equals(path, "/") ||
+                    string.Equals(path, "/index.html", StringComparison.OrdinalIgnoreCase))
+                {
+                    var token = antiforgery.GetAndStoreTokens(context).RequestToken;
+                    context.Response.Cookies.Append("X-XSRF", token, new CookieOptions
+                    {
+                        HttpOnly = false
+                    });
+                }
+
+                return x(context);
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
