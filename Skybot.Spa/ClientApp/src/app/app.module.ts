@@ -11,6 +11,7 @@ import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { AccountModule } from './account/account.module';
+import { SkybotModule } from './skybot/skybot.module';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { AccountModule } from './account/account.module';
     HttpClientModule,
     FormsModule,
     AccountModule,
+    SkybotModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
