@@ -1,0 +1,11 @@
+<h2>Get access code</h2>
+<div class="col-md-6 mx-auto">
+  <div class="card card-body">
+    <form #accessCodeForm="ngForm" (ngSubmit)="send(accessCodeForm)">
+      <div class="form-group">
+        <input type="text" #phoneNumber="ngModel" [ngModel]="model.phoneNumber" name="phoneNumber" required="required" placeholder="+15556667777" class="form-control" />
+      </div>
+      <button type="submit" class="btn btn-lg btn-primary btn-block">Send</button>
+    </form>
+  </div>
+</div>

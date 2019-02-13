@@ -3,15 +3,17 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { LoginFormComponent } from './login-form/login-form.component';
+import { VerificationFormComponent } from './verification-form/verification-form.component';
+import { AccessCodeFormComponent } from './access-code-form/access-code-form.component';
 import { AccountService } from './account.service';
 
 const accountRoutes: Routes = [
-  { path: 'account/login', component: LoginFormComponent }
+  {path: 'account/code', component: AccessCodeFormComponent},
+  { path: 'account/verify', component: VerificationFormComponent }
 ];
 
 @NgModule({
-  declarations: [LoginFormComponent],
+  declarations: [VerificationFormComponent, AccessCodeFormComponent],
   imports: [
     CommonModule,
     FormsModule,

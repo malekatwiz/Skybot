@@ -1,0 +1,14 @@
+<h2>Verify phone nuymber</h2>
+<div class="col-md-6 mx-auto">
+  <div class="card card-body">
+    <form #verificationForm="ngForm" (ngSubmit)="verify(verificationForm)">
+      <div class="form-group">
+        <input type="text" #phoneNumber="ngModel" [ngModel]="model.phoneNumber" name="phoneNumber" required="required" placeholder="+15556667777" class="form-control" />
+      </div>
+      <div class="form-group">
+        <input type="text" #accessCode="ngModel" [ngModel]="model.accessCode" name="accessCode" required="required" placeholder="111222" class="form-control" />
+      </div>
+      <button type="submit" class="btn btn-lg btn-primary btn-block">Verify</button>
+    </form>
+  </div>
+</div>
