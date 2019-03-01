@@ -1,7 +1,7 @@
 <div>
   <form #skybotForm="ngForm" (ngSubmit)="sendQuery(skybotForm)">
     <div class="form-group">
-      <input type="text" #query="ngModel" [ngModel]="model.query" required="required" name="query" placeholder="Ask me to do something.." class="form-control"/>
+      <input type="text" #query="ngModel" [ngModel]="model.query" required name="query" placeholder="Ask me to do something.." class="form-control"/>
     </div>
     <button type="submit" class="btn btn-lg btn-primary btn-block">Send</button>
   </form>

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccessCodeFormComponent } from './access-code-form.component';
+import { AccessCodeComponent } from './access-code.component';
 
-describe('AccessCodeFormComponent', () => {
-  let component: AccessCodeFormComponent;
-  let fixture: ComponentFixture<AccessCodeFormComponent>;
+describe('AccessCodeComponent', () => {
+  let component: AccessCodeComponent;
+  let fixture: ComponentFixture<AccessCodeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AccessCodeFormComponent ]
+      declarations: [ AccessCodeComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AccessCodeFormComponent);
+    fixture = TestBed.createComponent(AccessCodeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

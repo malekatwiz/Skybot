@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
+import { AccountService } from '../account.service';
 import { VerificationModel } from './verification-model';
 
 @Component({
@@ -10,12 +12,20 @@ import { VerificationModel } from './verification-model';
 export class VerificationFormComponent implements OnInit {
 
   model: VerificationModel = {phoneNumber: '', accessCode: null};
-  constructor() { }
+  constructor(private readonly accountService: AccountService,
+    private readonly router: Router) { }
 
   ngOnInit() {
   }
 
-  verify({ value, valid }: { value: VerificationModel, valid: boolean }) {
+  async verify({ value, valid }: { value: VerificationModel, valid: boolean }) {
+    if (valid) {
+      const isValid = await this.accountService.verifyAccessCode(value.phoneNumber, value.accessCode).then(
+        r => r.success);
 
+      if (isValid) {
+        this.router.navigate(['/']);
+      }
+    }
   }
 }
